@@ -5,22 +5,29 @@
 #include <string>
 #include <vector>
 
-class Simulator {
+#include "Receiver.h"
+
+class Simulator: public Receiver {
 public:
     Simulator();
     Simulator(class MessageQueue*);
     ~Simulator();
     
-    void notify(const std::string& msg_type, int to, int from, const std::string& message);
     void register_controller(class Controller*);
     void register_entity(class Entity*);
     void tick();
+    
+    void super_notify(const std::string& msg_type, int to, int from, const std::string& message);
+    
+    class MessageQueue* get_messagequeue();
 private:
-    class MessageQueue* mq;
-    std::vector<class Entity*> registered_entities;
-    std::vector<class Controller*> registered_controllers;
-    std::map<class Entity*, class Controller*> controllers;
-    void auto_attach_controllers();
+    void auto_attach_controllers(int eid);
+    
+    int id_autoincrement;
+    
+    std::map<int, class Entity*> registered_entities;
+    std::map<int, class Controller*> registered_controllers;
+    
 };
 
 #endif // SIMULATOR_H

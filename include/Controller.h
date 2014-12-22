@@ -1,8 +1,9 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include <string>
+#include <map>
 #include <set>
+#include <string>
 
 class Controller {
 public:
@@ -10,19 +11,19 @@ public:
     Controller(class MessageQueue* mq);
     ~Controller();
     
-    void add_requirement(std::string);
+    void add_requirement(const std::string& requirement);
     std::set<std::string> get_requirements();
     bool meets_requirements(class Entity* e);
-    virtual void notify(std::string) = 0;
+    virtual void notify(const std::string& msg_type, int to, int from, const std::string& message) = 0;
+    void cnotify(const std::string& msg_type, int to, int from, const std::string& message);
     void set_id(int);
     int get_id();
-    virtual void tick() = 0;
     void attach_entity(class Entity*);
-    class Entity* get_entity();
+    class Entity* get_entity(int eid);
     
 protected:
     class MessageQueue* mq;
-    class Entity* entity;
+    std::map<int, class Entity*> entities;
 private:
     int id;
     std::set<std::string> requirements;
